@@ -1,0 +1,35 @@
+package edu.cqupt.rabbitmq.exchange.direct;
+
+import com.rabbitmq.client.BuiltinExchangeType;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DeliverCallback;
+import edu.cqupt.rabbitmq.workQueue.RabbbitmqUtils;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeoutException;
+
+/**
+ * @author LWenH
+ * @create 2021/7/27 - 19:37
+ * <p>
+ * 测试 direct 直接交换机 叫消息发送给指定队列
+ */
+public class Receiver2 {
+    private static final String EXCHANGE_NAME = "direct";
+    private static final String QUEUE_NAME = "disk";
+
+    public static void main(String[] args) throws Exception {
+        Channel channel = RabbbitmqUtils.getChannel();
+        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        // 绑定direct交换机和disk队列 并且交换机只向队列转发routingKey为error的消息
+        channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "error");
+        DeliverCallback deliverCallback = (tag, msg) -> {
+            String message = new String(msg.getBody(), StandardCharsets.UTF_8);
+            System.out.println("Receiver2收到消息：" + message);
+        };
+        System.out.println("Receiver2等待接收消息");
+        channel.basicConsume(QUEUE_NAME, true, deliverCallback, a -> {});
+    }
+}

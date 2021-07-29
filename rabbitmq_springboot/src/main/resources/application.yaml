@@ -8,3 +8,5 @@ spring:
     port: 5672
     username: admin
     password: 123
+    # 开启发布确认模式
+    publisher-confirm-type: correlated

@@ -31,7 +31,7 @@ public class Producer {
             // 声明消息队列
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             // 发送消息
-            channel.basicPublish("",QUEUE_NAME,null,"hello, rabbitmq!".getBytes());
+            channel.basicPublish("", QUEUE_NAME, null, "hello, rabbitmq!".getBytes());
             System.out.println("消息发送完毕！");
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
